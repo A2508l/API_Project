@@ -237,7 +237,7 @@ booky.post("/author/new" , (req,res) => {
 
 
 /*
-Route               /oub/new
+Route               /pub/new
 Description         Add new publication
 Access              PUBLIC
 Parameter           NONE
@@ -252,6 +252,43 @@ booky.post("/pub/new" , (req,res) => {
 });
 
 
+
+//PUT
+
+
+/*
+Route               /pub/update/book
+Description         Update or add a new publication
+Access              PUBLIC
+Parameter           ISBN
+Methods             PUT
+ */
+
+booky.put("/pub/update/book/:isbn" , (req,res) => {
+    //Update the publication database 
+    database.publication.forEach((pub) =>{
+        if(pub.id === req.body.pubId){
+           return pub.books.push(req.params.isbn);
+        };
+    });
+    //Update the book database 
+    database.books.forEach((book) =>{
+        if(book.ISBN === req.params.isbn){
+            book.publications = req.body.pubId;
+            return;
+        };
+
+    });
+
+    return res.json(
+    {
+        books : database.books,
+        publications : database.publication,
+        message : "Successfully updated publications"
+    }
+    );
+
+});
 
 
 booky.listen(3000,()=>{
